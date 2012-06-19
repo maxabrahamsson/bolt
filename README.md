@@ -1,4 +1,4 @@
-bolt
+Bolt
 ====
 
-Bolt is a java framework for Kinect
+a Kinect framework for Java

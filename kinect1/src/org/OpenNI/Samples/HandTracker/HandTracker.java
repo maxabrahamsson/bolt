@@ -111,7 +111,7 @@ class HandTracker extends Component
     private BufferedImage bimg;
     int width, height;
     
-    private final String SAMPLE_XML_FILE = "C:/Program Files (x86)/OpenNI/Data/SamplesConfig.xml";
+    private final String SAMPLE_XML_FILE = "SamplesConfig.xml";
     public HandTracker()
     {
 
