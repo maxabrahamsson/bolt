@@ -17,48 +17,34 @@ class HandTrackerThread extends Component implements Runnable
 	{
 
 		@Override
-		public void update(IObservable<GestureRecognizedEventArgs> observable,
-				GestureRecognizedEventArgs args)
+		public void update(IObservable<GestureRecognizedEventArgs> observable,GestureRecognizedEventArgs args)
 		{
-			try
-			{
-				actionAdapter.triggerActions(new Action(ActionType.HandGesture));
+			try {
 				handsGen.StartTracking(args.getEndPosition());
-				//gestureGen.removeGesture("Wave");
-			} catch (StatusException e)
-			{
-				e.printStackTrace();
-			}
+				actionAdapter.triggerActions(new Action(ActionType.HandGesture,args.getIdPosition()));
+			} 
+			catch (StatusException e) {e.printStackTrace();}
 		}
 	}
 	class MyHandCreateEvent implements IObserver<ActiveHandEventArgs>
-	{
+	{	
 		public void update(IObservable<ActiveHandEventArgs> observable,ActiveHandEventArgs args){
-			handPosition=args.getPosition();
-			actionAdapter.triggerActions(new Action(ActionType.HandTrackStart,handPosition));
+			hands.put(args.getId(), args.getPosition());
+			actionAdapter.triggerActions(new Action(ActionType.HandTrackStart,args.getPosition()));
 		}
 	}
 	class MyHandUpdateEvent implements IObserver<ActiveHandEventArgs>
 	{
-		public void update(IObservable<ActiveHandEventArgs> observable,ActiveHandEventArgs args){	
-			handPosition=args.getPosition();
-			actionAdapter.triggerActions(new Action(ActionType.HandUpdate,handPosition));
+		public void update(IObservable<ActiveHandEventArgs> observable,ActiveHandEventArgs args){			
+			hands.put(args.getId(), args.getPosition());
+			actionAdapter.triggerActions(new Action(ActionType.HandUpdate,args.getPosition()));
 		}
 	}
 	class MyHandDestroyEvent implements IObserver<InactiveHandEventArgs>
 	{
 		public void update(IObservable<InactiveHandEventArgs> observable,InactiveHandEventArgs args){
+			hands.remove(args.getId());
 			actionAdapter.triggerActions(new Action(ActionType.HandTrackLost));
-			if (handPosition==null)
-			{
-				try
-				{
-					gestureGen.addGesture("Wave");
-				} catch (StatusException e)
-				{
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 	private static final long serialVersionUID = 1L;
@@ -67,11 +53,12 @@ class HandTrackerThread extends Component implements Runnable
     private DepthGenerator depthGen;
     private GestureGenerator gestureGen;
     private HandsGenerator handsGen;    
-    private Point3D handPosition;
+    
     private byte[] imgbytes;
     private float histogram[];
-    public Point3D lastPos=null;
     private BufferedImage bimg;
+
+    Polygon p=new Polygon();
     int width, height;
     private final String SAMPLE_XML_FILE = "SamplesConfig.xml";
     
@@ -163,19 +150,43 @@ class HandTrackerThread extends Component implements Runnable
             
             ShortBuffer depth = depthMD.getData().createShortBuffer();
             calcHist(depth);
-            depth.rewind();          
+            depth.rewind();     
+            
             while(depth.remaining() > 0)
             {
                 int pos = depth.position();
                 short pixel = depth.get();
+                
                 imgbytes[pos] = (byte)histogram[pixel];
             }
         } catch (GeneralException e) {
             e.printStackTrace();
         }
     }
-
-
+    
+    public void checkNearDepth(Point3D handPos)
+    {
+    		//yakin.clear();
+    		p.reset();
+            DepthMetaData depthMD = depthGen.getMetaData();         
+            DepthMap dmap=depthMD.getData(); 
+            ShortBuffer depth = dmap.createShortBuffer();
+            
+            float handDepth=dmap.readPixel((int)handPos.getX(), (int)handPos.getY());
+            	       
+            for(int x=(int)handPos.getX()-100; x<(int)handPos.getX()+100; x++)
+            {
+            	for(int y=(int)handPos.getY()-100; y<(int)handPos.getY()+100; y++)
+            	{
+            		float temp=dmap.readPixel(x, y);
+            		if(Math.abs(handDepth-temp)<5)
+            		{
+                        p.addPoint(x, y);
+            		}
+            	}
+            }
+	
+    }
     public Dimension getPreferredSize() {
         return new Dimension(width, height);
     }
@@ -185,18 +196,20 @@ class HandTrackerThread extends Component implements Runnable
         Raster raster = Raster.createPackedRaster(dataBuffer, width, height, 8, null);
         bimg.setData(raster);
         g.drawImage(bimg, 0, 0, null);
-        
         Point3D proj = null;
-        if(handPosition!=null)
-        {
         	g.setColor(Color.RED);
-        	try {
-				proj = depthGen.convertRealWorldToProjective(handPosition);
-			} catch (StatusException e) {
-				e.printStackTrace();
-			}
-        	g.drawArc((int)proj.getX(), (int)proj.getY(), 5, 5, 0, 360);
-        }
+
+        	for(Point3D position:hands.values())
+        	{
+            	try {
+    				proj = depthGen.convertRealWorldToProjective(position);
+    			} catch (StatusException e) {
+    				e.printStackTrace();
+    			}
+            	//checkNearDepth(proj);
+            	g.drawRect((int)proj.getX()-100,(int)proj.getY()-100,200,200);
+        	}
+        	//g.drawPolygon(p);
     }
 
 	@Override

@@ -1,0 +1,257 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x5ede9498, pid=6932, tid=6164
+#
+# JRE version: 7.0_05-b05
+# Java VM: Java HotSpot(TM) Client VM (23.1-b03 mixed mode, sharing windows-x86 )
+# Problematic frame:
+# C  [XnVFeatures_1_5_2.dll+0x1f9498]  xnModuleGetOpenNIVersion+0x1bb478
+#
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.sun.com/bugreport/crash.jsp
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x06bc1000):  JavaThread "Thread-2" [_thread_in_native, id=6164, stack(0x16d60000,0x16db0000)]
+
+siginfo: ExceptionCode=0xc0000005, reading address 0x06bdd08c
+
+Registers:
+EAX=0x1333e350, EBX=0x1333e340, ECX=0x000000b3, EDX=0x000000a6
+ESP=0x16daeea8, EBP=0x00006fe0, ESI=0x06bdcf40, EDI=0x06bcef80
+EIP=0x5ede9498, EFLAGS=0x00010286
+
+Top of Stack: (sp=0x16daeea8)
+0x16daeea8:   00000000 5eec07f4 7fffffff 7fffffff
+0x16daeeb8:   7fffffff 090d6950 80000000 00000000
+0x16daeec8:   090d6960 7fffffff 7fffffff 00000000
+0x16daeed8:   00000000 00000000 80000000 5eec07f4
+0x16daeee8:   062a7a80 00000000 7fffffff 80000000
+0x16daeef8:   80000000 80000000 5eec07f4 7fffffff
+0x16daef08:   7fffffff 7fffffff 80000000 80000000
+0x16daef18:   80000000 5eec07f4 7fffffff 7fffffff 
+
+Instructions: (pc=0x5ede9498)
+0x5ede9478:   f0 00 00 00 73 cc 8b ac 24 f8 00 00 00 8b 4b 04
+0x5ede9488:   8b 13 8b 75 1c 8b 6d 28 0f af e9 8b 3e 8d 34 6f
+0x5ede9498:   0f b7 3c 56 85 ff 75 32 8b 94 24 14 01 00 00 83
+0x5ede94a8:   c3 08 3b 42 0c 72 9b 8b 94 24 f4 00 00 00 8b 8c 
+
+
+Register to memory mapping:
+
+EAX=0x1333e350 is an unknown value
+EBX=0x1333e340 is an unknown value
+ECX=0x000000b3 is an unknown value
+EDX=0x000000a6 is an unknown value
+ESP=0x16daeea8 is pointing into the stack for thread: 0x06bc1000
+EBP=0x00006fe0 is an unknown value
+ESI=0x06bdcf40 is an unknown value
+EDI=0x06bcef80 is an unknown value
+
+
+Stack: [0x16d60000,0x16db0000],  sp=0x16daeea8,  free space=315k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+C  [XnVFeatures_1_5_2.dll+0x1f9498]  xnModuleGetOpenNIVersion+0x1bb478
+
+[error occurred during error reporting (printing native stack), id 0xc0000005]
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  org.OpenNI.NativeMethods.xnWaitAnyUpdateAll(J)I+0
+j  org.OpenNI.Context.waitAnyUpdateAll()V+4
+j  HandTrackerThread.updateDepth()V+12
+j  HandTrackerThread.run()V+4
+j  java.lang.Thread.run()V+11
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x06bd8800 JavaThread "D3D Screen Updater" daemon [_thread_blocked, id=276, stack(0x16e20000,0x16e70000)]
+  0x002bb000 JavaThread "DestroyJavaVM" [_thread_blocked, id=3652, stack(0x021c0000,0x02210000)]
+=>0x06bc1000 JavaThread "Thread-2" [_thread_in_native, id=6164, stack(0x16d60000,0x16db0000)]
+  0x06bad800 JavaThread "AWT-EventQueue-0" [_thread_in_vm, id=1696, stack(0x15250000,0x152a0000)]
+  0x06b94c00 JavaThread "AWT-Windows" daemon [_thread_in_native, id=6260, stack(0x15350000,0x153a0000)]
+  0x06b94400 JavaThread "AWT-Shutdown" [_thread_blocked, id=5412, stack(0x150e0000,0x15130000)]
+  0x06b93000 JavaThread "Java2D Disposer" daemon [_thread_blocked, id=4336, stack(0x15080000,0x150d0000)]
+  0x02301c00 JavaThread "Service Thread" daemon [_thread_blocked, id=6476, stack(0x04900000,0x04950000)]
+  0x022fd000 JavaThread "C1 CompilerThread0" daemon [_thread_in_native, id=6096, stack(0x046d0000,0x04720000)]
+  0x022fb400 JavaThread "Attach Listener" daemon [_thread_blocked, id=1708, stack(0x002c0000,0x00310000)]
+  0x022f8000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=6760, stack(0x04580000,0x045d0000)]
+  0x022e3000 JavaThread "Finalizer" daemon [_thread_blocked, id=5372, stack(0x04480000,0x044d0000)]
+  0x022de400 JavaThread "Reference Handler" daemon [_thread_blocked, id=7156, stack(0x043f0000,0x04440000)]
+
+Other Threads:
+  0x022db400 VMThread [stack: 0x004b0000,0x00500000] [id=2564]
+  0x04958400 WatcherThread [stack: 0x04be0000,0x04c30000] [id=5488]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ def new generation   total 4928K, used 4150K [0x24580000, 0x24ad0000, 0x29ad0000)
+  eden space 4416K,  93% used [0x24580000, 0x2498d958, 0x249d0000)
+  from space 512K,   0% used [0x249d0000, 0x249d0000, 0x24a50000)
+  to   space 512K,   0% used [0x24a50000, 0x24a50000, 0x24ad0000)
+ tenured generation   total 10944K, used 0K [0x29ad0000, 0x2a580000, 0x34580000)
+   the space 10944K,   0% used [0x29ad0000, 0x29ad0000, 0x29ad0200, 0x2a580000)
+ compacting perm gen  total 12288K, used 936K [0x34580000, 0x35180000, 0x38580000)
+   the space 12288K,   7% used [0x34580000, 0x3466a150, 0x3466a200, 0x35180000)
+    ro space 10240K,  45% used [0x38580000, 0x38a03960, 0x38a03a00, 0x38f80000)
+    rw space 12288K,  54% used [0x38f80000, 0x396074d8, 0x39607600, 0x39b80000)
+
+Code Cache  [0x02310000, 0x023c8000, 0x04310000)
+ total_blobs=267 nmethods=55 adapters=147 free_code_cache=32062Kb largest_free_block=32831616
+
+Compilation events (10 events):
+Event: 1.121 Thread 0x022fd000   50             java.util.Arrays::binarySearch0 (95 bytes)
+Event: 1.121 Thread 0x022fd000 nmethod 50 0x023bb548 code [0x023bb660, 0x023bb7c8]
+Event: 1.121 Thread 0x022fd000   51             sun.java2d.loops.GraphicsPrimitiveMgr$2::compare (39 bytes)
+Event: 1.121 Thread 0x022fd000 nmethod 51 0x023bb948 code [0x023bba50, 0x023bbb50]
+Event: 1.130 Thread 0x022fd000   52             java.util.HashMap::transfer (83 bytes)
+Event: 1.130 Thread 0x022fd000 nmethod 52 0x023bc488 code [0x023bc590, 0x023bc760]
+Event: 1.131 Thread 0x022fd000   53             sun.awt.FontConfiguration::contains (24 bytes)
+Event: 1.131 Thread 0x022fd000 nmethod 53 0x023bc988 code [0x023bca80, 0x023bcb50]
+Event: 1.133 Thread 0x022fd000   54             java.util.StringTokenizer::scanToken (179 bytes)
+Event: 1.134 Thread 0x022fd000 nmethod 54 0x023bcc48 code [0x023bcdd0, 0x023bd248]
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Internal exceptions (10 events):
+Event: 1.056 Thread 0x002bb000 Threw 0x24770748 at C:\jdk7u5_32P\jdk7u5\hotspot\src\share\vm\prims\jni.cpp:715
+Event: 1.100 Thread 0x002bb000 Threw 0x247ac6a0 at C:\jdk7u5_32P\jdk7u5\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 1.101 Thread 0x002bb000 Threw 0x247ae138 at C:\jdk7u5_32P\jdk7u5\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 1.101 Thread 0x002bb000 Threw 0x247b0308 at C:\jdk7u5_32P\jdk7u5\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 1.101 Thread 0x002bb000 Threw 0x247b1d80 at C:\jdk7u5_32P\jdk7u5\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 1.102 Thread 0x002bb000 Threw 0x247b51e8 at C:\jdk7u5_32P\jdk7u5\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 1.102 Thread 0x002bb000 Threw 0x247b6c80 at C:\jdk7u5_32P\jdk7u5\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 1.102 Thread 0x002bb000 Threw 0x247b8e50 at C:\jdk7u5_32P\jdk7u5\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 1.102 Thread 0x002bb000 Threw 0x247ba880 at C:\jdk7u5_32P\jdk7u5\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 1.107 Thread 0x002bb000 Threw 0x247cef60 at C:\jdk7u5_32P\jdk7u5\hotspot\src\share\vm\prims\jvm.cpp:1166
+
+Events (10 events):
+Event: 1.158 Thread 0x002bb000 Thread added: 0x002bb000
+Event: 1.160 loading class 0x06b92c80
+Event: 1.161 loading class 0x06b92c80 done
+Event: 1.161 loading class 0x06bc6cc0
+Event: 1.161 loading class 0x06bc6cc0 done
+Event: 1.162 loading class 0x06ba7e48
+Event: 1.162 loading class 0x06ba7e48 done
+Event: 1.163 loading class 0x06b922c0
+Event: 1.163 loading class 0x06b922c0 done
+Event: 1.163 Thread 0x06bd8800 Thread added: 0x06bd8800
+
+
+Dynamic libraries:
+0x00320000 - 0x0034f000 	C:\Program Files (x86)\Java\jdk1.7.0_05\bin\javaw.exe
+0x76fd0000 - 0x77150000 	C:\Windows\SysWOW64\ntdll.dll
+0x74fa0000 - 0x750b0000 	C:\Windows\syswow64\kernel32.dll
+0x75390000 - 0x753d6000 	C:\Windows\syswow64\KERNELBASE.dll
+0x74f00000 - 0x74fa0000 	C:\Windows\syswow64\ADVAPI32.dll
+0x76b20000 - 0x76bcc000 	C:\Windows\syswow64\msvcrt.dll
+0x754d0000 - 0x754e9000 	C:\Windows\SysWOW64\sechost.dll
+0x75c60000 - 0x75d50000 	C:\Windows\syswow64\RPCRT4.dll
+0x74b30000 - 0x74b90000 	C:\Windows\syswow64\SspiCli.dll
+0x74b20000 - 0x74b2c000 	C:\Windows\syswow64\CRYPTBASE.dll
+0x74c90000 - 0x74d90000 	C:\Windows\syswow64\USER32.dll
+0x74c00000 - 0x74c90000 	C:\Windows\syswow64\GDI32.dll
+0x75690000 - 0x7569a000 	C:\Windows\syswow64\LPK.dll
+0x75bc0000 - 0x75c5d000 	C:\Windows\syswow64\USP10.dll
+0x6e810000 - 0x6e9ae000 	C:\Windows\WinSxS\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.7601.17514_none_41e6975e2bd6f2b2\COMCTL32.dll
+0x750d0000 - 0x75127000 	C:\Windows\syswow64\SHLWAPI.dll
+0x75130000 - 0x75190000 	C:\Windows\system32\IMM32.DLL
+0x753e0000 - 0x754ac000 	C:\Windows\syswow64\MSCTF.dll
+0x62ee0000 - 0x62f9e000 	C:\Program Files (x86)\Java\jdk1.7.0_05\jre\bin\msvcr100.dll
+0x5ff60000 - 0x602aa000 	C:\Program Files (x86)\Java\jdk1.7.0_05\jre\bin\client\jvm.dll
+0x72f90000 - 0x72f97000 	C:\Windows\system32\WSOCK32.dll
+0x75e90000 - 0x75ec5000 	C:\Windows\syswow64\WS2_32.dll
+0x76fa0000 - 0x76fa6000 	C:\Windows\syswow64\NSI.dll
+0x732b0000 - 0x732e2000 	C:\Windows\system32\WINMM.dll
+0x750b0000 - 0x750b5000 	C:\Windows\syswow64\PSAPI.DLL
+0x74850000 - 0x7485c000 	C:\Program Files (x86)\Java\jdk1.7.0_05\jre\bin\verify.dll
+0x63540000 - 0x63560000 	C:\Program Files (x86)\Java\jdk1.7.0_05\jre\bin\java.dll
+0x63560000 - 0x63573000 	C:\Program Files (x86)\Java\jdk1.7.0_05\jre\bin\zip.dll
+0x5fe10000 - 0x5ff52000 	C:\Program Files (x86)\Java\jdk1.7.0_05\jre\bin\awt.dll
+0x74e70000 - 0x74eff000 	C:\Windows\syswow64\OLEAUT32.dll
+0x75960000 - 0x75abc000 	C:\Windows\syswow64\ole32.dll
+0x633d0000 - 0x633ee000 	C:\Users\ahmet\Desktop\WorkingKinect\kinect1\Release\OpenNI.jni.dll
+0x63380000 - 0x633d0000 	C:\Program Files (x86)\OpenNI\Bin\OpenNI.dll
+0x757c0000 - 0x7595d000 	C:\Windows\syswow64\SETUPAPI.dll
+0x75660000 - 0x75687000 	C:\Windows\syswow64\CFGMGR32.dll
+0x754b0000 - 0x754c2000 	C:\Windows\syswow64\DEVOBJ.dll
+0x75ed0000 - 0x76b1a000 	C:\Windows\syswow64\SHELL32.dll
+0x63520000 - 0x63538000 	C:\Program Files (x86)\OpenNI\bin\nimRecorder.dll
+0x62ec0000 - 0x62eda000 	C:\Program Files (x86)\OpenNI\bin\nimMockNodes.dll
+0x62e70000 - 0x62eb9000 	C:\Program Files (x86)\OpenNI\bin\nimCodecs.dll
+0x62e50000 - 0x62e70000 	C:\Program Files (x86)\PrimeSense\SensorKinect\Bin\XnDeviceFile.dll
+0x74860000 - 0x7486b000 	C:\Program Files (x86)\PrimeSense\SensorKinect\Bin\XnCore.dll
+0x73320000 - 0x733c3000 	C:\Windows\WinSxS\x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.6161_none_50934f2ebcb7eb57\MSVCR90.dll
+0x62e10000 - 0x62e48000 	C:\Program Files (x86)\PrimeSense\SensorKinect\Bin\XnDDK.dll
+0x5fdc0000 - 0x5fe04000 	C:\Program Files (x86)\PrimeSense\SensorKinect\Bin\XnFormats.dll
+0x5fd70000 - 0x5fdbf000 	C:\Program Files (x86)\PrimeSense\SensorKinect\Bin\XnDeviceSensorV2KM.dll
+0x5fad0000 - 0x5fd68000 	C:\Program Files (x86)\PrimeSense\NITE\Features_1_3_0\Bin\XnVFeatures_1_3_0.dll
+0x6dee0000 - 0x6df6e000 	C:\Windows\WinSxS\x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.6161_none_50934f2ebcb7eb57\MSVCP90.dll
+0x5f120000 - 0x5f36f000 	C:\Program Files (x86)\PrimeSense\NITE\Features_1_3_1\Bin\XnVFeatures_1_3_1.dll
+0x5f3a0000 - 0x5f5b9000 	C:\Program Files (x86)\PrimeSense\NITE\Features_1_4_1\Bin\XnVFeatures_1_4_1.dll
+0x5ef00000 - 0x5f116000 	C:\Program Files (x86)\PrimeSense\NITE\Features_1_4_2\Bin\XnVFeatures_1_4_2.dll
+0x5ebf0000 - 0x5eef7000 	C:\Program Files (x86)\PrimeSense\NITE\Features_1_5_2\Bin\XnVFeatures_1_5_2.dll
+0x5f9f0000 - 0x5fac7000 	C:\Program Files (x86)\PrimeSense\NITE\Hands_1_3_0\Bin\XnVHandGenerator_1_3_0.dll
+0x5f910000 - 0x5f9ec000 	C:\Program Files (x86)\PrimeSense\NITE\Hands_1_3_1\Bin\XnVHandGenerator_1_3_1.dll
+0x5eb10000 - 0x5ebed000 	C:\Program Files (x86)\PrimeSense\NITE\Hands_1_4_1\Bin\XnVHandGenerator_1_4_1.dll
+0x5ea30000 - 0x5eb0d000 	C:\Program Files (x86)\PrimeSense\NITE\Hands_1_4_2\Bin\XnVHandGenerator_1_4_2.dll
+0x5e940000 - 0x5ea2c000 	C:\Program Files (x86)\PrimeSense\NITE\Hands_1_5_2\Bin\XnVHandGenerator_1_5_2.dll
+0x700f0000 - 0x70170000 	C:\Windows\system32\uxtheme.dll
+0x74ba0000 - 0x74bcd000 	C:\Windows\syswow64\WINTRUST.dll
+0x756a0000 - 0x757bd000 	C:\Windows\syswow64\CRYPT32.dll
+0x74b90000 - 0x74b9c000 	C:\Windows\syswow64\MSASN1.dll
+0x72dd0000 - 0x72e0c000 	C:\Windows\system32\mswsock.dll
+0x72dc0000 - 0x72dc5000 	C:\Windows\System32\wshtcpip.dll
+0x70e50000 - 0x70e63000 	C:\Windows\system32\DWMAPI.DLL
+0x6f940000 - 0x6fb03000 	C:\Windows\system32\d3d9.dll
+0x732a0000 - 0x732a9000 	C:\Windows\system32\VERSION.dll
+0x6f930000 - 0x6f936000 	C:\Windows\system32\d3d8thk.dll
+0x685e0000 - 0x68f85000 	C:\Windows\system32\nvd3dum.dll
+0x72e60000 - 0x72e85000 	C:\Windows\system32\powrprof.dll
+0x5f8e0000 - 0x5f90a000 	C:\Program Files (x86)\Java\jdk1.7.0_05\jre\bin\fontmanager.dll
+0x74d90000 - 0x74e13000 	C:\Windows\syswow64\CLBCatQ.DLL
+0x65ca0000 - 0x65d8b000 	C:\Windows\system32\dbghelp.dll
+
+VM Arguments:
+jvm_args: -Djava.library.path=C:\Users\ahmet\Desktop\WorkingKinect\kinect1\Release;C:\Users\ahmet\Desktop\WorkingKinect\kinect1\Release -Dfile.encoding=Cp1254 
+java_command: Starter
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=C:\Program Files\Java\jdk1.6.0_25
+CLASSPATH=C:\Program Files (x86)\OpenNI\Bin\org.OpenNI.jar
+PATH=C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Common Files\Microsoft Shared\Windows Live;C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live;C:\Program Files (x86)\PC Connectivity Solution\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Microsoft SQL Server\100\Tools\Binn\;C:\Program Files\Microsoft SQL Server\100\Tools\Binn\;C:\Program Files\Microsoft SQL Server\100\DTS\Binn\;C:\Python26;C:\Windows\system32\wbem;C:\Program Files (x86)\IVT Corporation\BlueSoleil\Mobile;C:\Program Files (x86)\Windows Live\Shared;C:\Program Files (x86)\CMake 2.8\bin;C:\Program Files\PrimeSense\NITE\Bin64;C:\Program Files\PrimeSense\SensorKinect\Bin64;C:\Program Files (x86)\Prime Sense\Sensor\Bin;C:\Program Files (x86)\PrimeSense\NITE\bin;C:\Program Files (x86)\OpenNI\Bin
+USERNAME=ahmet
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 30 Stepping 5, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 7 , 64 bit Build 7601 Service Pack 1
+
+CPU:total 8 (4 cores per cpu, 2 threads per core) family 6 model 30 stepping 5, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, ht, tsc, tscinvbit
+
+Memory: 4k page, physical 4110832k(1024928k free), swap 8219816k(3855800k free)
+
+vm_info: Java HotSpot(TM) Client VM (23.1-b03) for windows-x86 JRE (1.7.0_05-b05), built on May 15 2012 18:11:27 by "java_re" with unknown MS VC++:1600
+
+time: Fri Jun 22 16:27:32 2012
+elapsed time: 1 seconds
+
