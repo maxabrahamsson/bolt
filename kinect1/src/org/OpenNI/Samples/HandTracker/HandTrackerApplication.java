@@ -43,7 +43,9 @@ public class HandTrackerApplication {
     	frame.addKeyListener(new KeyListener()
 		{
 			@Override
-			public void keyTyped(KeyEvent arg0) {}
+			public void keyTyped(KeyEvent arg0) {
+				System.out.println(viewer.lastPos.getX()+"y"+viewer.lastPos.getY());
+			}
 			@Override
 			public void keyReleased(KeyEvent arg0) {}
 			@Override

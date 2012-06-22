@@ -1,39 +1,18 @@
-/****************************************************************************
-*                                                                           *
-*  OpenNI 1.x Alpha                                                         *
-*  Copyright (C) 2011 PrimeSense Ltd.                                       *
-*                                                                           *
-*  This file is part of OpenNI.                                             *
-*                                                                           *
-*  OpenNI is free software: you can redistribute it and/or modify           *
-*  it under the terms of the GNU Lesser General Public License as published *
-*  by the Free Software Foundation, either version 3 of the License, or     *
-*  (at your option) any later version.                                      *
-*                                                                           *
-*  OpenNI is distributed in the hope that it will be useful,                *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the             *
-*  GNU Lesser General Public License for more details.                      *
-*                                                                           *
-*  You should have received a copy of the GNU Lesser General Public License *
-*  along with OpenNI. If not, see <http://www.gnu.org/licenses/>.           *
-*                                                                           *
-****************************************************************************/
-package org.OpenNI.Samples.HandTracker;
-
 import org.OpenNI.*;
 
 import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Vector;
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.*;
 
-class HandTracker extends Component
-{
+import javax.swing.JFrame;
 
+class HandTrackerThread extends Component implements Runnable
+{
+	HashMap <Integer,Point3D> hands=new HashMap<Integer,Point3D>();
 	class MyGestureRecognized implements IObserver<GestureRecognizedEventArgs>
 	{
 
@@ -43,8 +22,9 @@ class HandTracker extends Component
 		{
 			try
 			{
+				actionAdapter.triggerActions(new Action(ActionType.HandGesture));
 				handsGen.StartTracking(args.getEndPosition());
-				gestureGen.removeGesture("Wave");
+				//gestureGen.removeGesture("Wave");
 			} catch (StatusException e)
 			{
 				e.printStackTrace();
@@ -53,38 +33,23 @@ class HandTracker extends Component
 	}
 	class MyHandCreateEvent implements IObserver<ActiveHandEventArgs>
 	{
-		public void update(IObservable<ActiveHandEventArgs> observable,
-				ActiveHandEventArgs args)
-		{
-			ArrayList<Point3D> newList = new ArrayList<Point3D>();
-			newList.add(args.getPosition());
-			history.put(new Integer(args.getId()), newList);
+		public void update(IObservable<ActiveHandEventArgs> observable,ActiveHandEventArgs args){
+			handPosition=args.getPosition();
+			actionAdapter.triggerActions(new Action(ActionType.HandTrackStart,handPosition));
 		}
 	}
 	class MyHandUpdateEvent implements IObserver<ActiveHandEventArgs>
 	{
-		public void update(IObservable<ActiveHandEventArgs> observable,
-				ActiveHandEventArgs args)
-		{
-			ArrayList<Point3D> historyList = history.get(args.getId());
-			
-			historyList.add(args.getPosition());
-			
-			while (historyList.size() > historySize)
-			{
-				historyList.remove(0);
-			}
-
+		public void update(IObservable<ActiveHandEventArgs> observable,ActiveHandEventArgs args){	
+			handPosition=args.getPosition();
+			actionAdapter.triggerActions(new Action(ActionType.HandUpdate,handPosition));
 		}
 	}
-	private int historySize = 10;
 	class MyHandDestroyEvent implements IObserver<InactiveHandEventArgs>
 	{
-		public void update(IObservable<InactiveHandEventArgs> observable,
-				InactiveHandEventArgs args)
-		{
-			history.remove(args.getId());
-			if (history.isEmpty())
+		public void update(IObservable<InactiveHandEventArgs> observable,InactiveHandEventArgs args){
+			actionAdapter.triggerActions(new Action(ActionType.HandTrackLost));
+			if (handPosition==null)
 			{
 				try
 				{
@@ -96,31 +61,30 @@ class HandTracker extends Component
 			}
 		}
 	}
-	
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private OutArg<ScriptNode> scriptNode;
     private Context context;
     private DepthGenerator depthGen;
     private GestureGenerator gestureGen;
-    private HandsGenerator handsGen;
-    private HashMap<Integer, ArrayList<Point3D>> history;
+    private HandsGenerator handsGen;    
+    private Point3D handPosition;
     private byte[] imgbytes;
     private float histogram[];
     public Point3D lastPos=null;
     private BufferedImage bimg;
     int width, height;
-    Robot robot=null;
     private final String SAMPLE_XML_FILE = "SamplesConfig.xml";
-    public HandTracker()
+    
+	private boolean shouldRun = true;
+	private JFrame frame;
+	
+	ActionAdapter actionAdapter=null;
+    public HandTrackerThread(ActionAdapter actionAdapter)
     {
-
+    	this.actionAdapter=actionAdapter;
         try {
             scriptNode = new OutArg<ScriptNode>();
             context = Context.createFromXmlFile(SAMPLE_XML_FILE, scriptNode);
-
             gestureGen = GestureGenerator.create(context);
             gestureGen.addGesture("Wave");
             gestureGen.getGestureRecognizedEvent().addObserver(new MyGestureRecognized());
@@ -135,7 +99,6 @@ class HandTracker extends Component
 
 			context.startGeneratingAll();
 			
-            history = new HashMap<Integer, ArrayList<Point3D>>(); 
             
             histogram = new float[10000];
             width = depthMD.getFullXRes();
@@ -152,22 +115,22 @@ class HandTracker extends Component
             e.printStackTrace();
             System.exit(1);
         }
-        try {
-			robot = new Robot();
-		} catch (AWTException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	frame = new JFrame("OpenNI Hand Tracker");
+    	frame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {System.exit(0);}
+        });
+    	frame.add("Center",this);
+    	frame.pack();
+    	frame.setVisible(true);
     }
     
     private void calcHist(ShortBuffer depth)
     {
-        // reset
         for (int i = 0; i < histogram.length; ++i)
+        {
             histogram[i] = 0;
-        
+        }
         depth.rewind();
-
         int points = 0;
         while(depth.remaining() > 0)
         {
@@ -177,13 +140,11 @@ class HandTracker extends Component
                 histogram[depthVal]++;
                 points++;
             }
-        }
-        
+        }        
         for (int i = 1; i < histogram.length; i++)
         {
             histogram[i] += histogram[i-1];
         }
-
         if (points > 0)
         {
             for (int i = 1; i < histogram.length; i++)
@@ -192,7 +153,6 @@ class HandTracker extends Component
             }
         }
     }
-
 
     void updateDepth()
     {
@@ -203,8 +163,7 @@ class HandTracker extends Component
             
             ShortBuffer depth = depthMD.getData().createShortBuffer();
             calcHist(depth);
-            depth.rewind();
-            
+            depth.rewind();          
             while(depth.remaining() > 0)
             {
                 int pos = depth.position();
@@ -221,37 +180,33 @@ class HandTracker extends Component
         return new Dimension(width, height);
     }
 
-    Color colors[] = {Color.RED, Color.BLUE, Color.CYAN, Color.GREEN, Color.MAGENTA, Color.PINK, Color.YELLOW};
     public void paint(Graphics g) {
         DataBufferByte dataBuffer = new DataBufferByte(imgbytes, width*height);
         Raster raster = Raster.createPackedRaster(dataBuffer, width, height, 8, null);
         bimg.setData(raster);
-
         g.drawImage(bimg, 0, 0, null);
-
-        for (Integer id : history.keySet())
-        {
-        	try
-        	{
-        	ArrayList<Point3D> points = history.get(id);
-        	g.setColor(colors[id%colors.length]);
-        	int[] xPoints = new int[points.size()];
-        	int[] yPoints = new int[points.size()];
-        	for (int i = 0; i < points.size(); ++i)
-        	{
-        		Point3D proj = depthGen.convertRealWorldToProjective(points.get(i));
-        		xPoints[i] = (int)proj.getX();
-        		yPoints[i] = (int)proj.getY();
-        	}
-            g.drawPolyline(xPoints, yPoints, points.size());
-    		Point3D proj = depthGen.convertRealWorldToProjective(points.get(points.size()-1));
-            g.drawArc((int)proj.getX(), (int)proj.getY(), 5, 5, 0, 360);
-        	} catch (StatusException e)
-        	{
-        		e.printStackTrace();
-        	}
-        }
         
+        Point3D proj = null;
+        if(handPosition!=null)
+        {
+        	g.setColor(Color.RED);
+        	try {
+				proj = depthGen.convertRealWorldToProjective(handPosition);
+			} catch (StatusException e) {
+				e.printStackTrace();
+			}
+        	g.drawArc((int)proj.getX(), (int)proj.getY(), 5, 5, 0, 360);
+        }
     }
+
+	@Override
+	public void run() {
+        while(shouldRun) {
+            updateDepth();
+            repaint();
+        }
+        frame.dispose();
+		
+	}
 }
 

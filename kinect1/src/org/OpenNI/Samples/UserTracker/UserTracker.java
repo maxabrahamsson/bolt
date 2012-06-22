@@ -63,8 +63,7 @@ public class UserTracker extends Component
 			System.out.println("Lost user " + args.getId());
 			joints.remove(args.getId());
 		}
-	}
-	
+	}	
 	class CalibrationCompleteObserver implements IObserver<CalibrationProgressEventArgs>
 	{
 		@Override
